@@ -1,0 +1,52 @@
+
+
+INSERT INTO "main"."category" ("id", "name") VALUES ('8', 'Bills');
+INSERT INTO "main"."category" ("id", "name") VALUES ('4', 'Commute');
+INSERT INTO "main"."category" ("id", "name") VALUES ('1', 'Entertainment');
+INSERT INTO "main"."category" ("id", "name") VALUES ('2', 'Food and Grocery');
+INSERT INTO "main"."category" ("id", "name") VALUES ('6', 'Investments');
+INSERT INTO "main"."category" ("id", "name") VALUES ('7', 'Medical');
+INSERT INTO "main"."category" ("id", "name") VALUES ('5', 'Rent');
+INSERT INTO "main"."category" ("id", "name") VALUES ('3', 'Shopping');
+INSERT INTO "main"."category" ("id", "name") VALUES ('9', 'Travel');
+INSERT INTO "main"."category" ("id", "name") VALUES ('10', 'Unexpected');
+
+
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('1', 'Cinema', '1');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('2', 'Grocery', '2');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('3', 'Supermarket', '2');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('4', 'BigBasket', '2');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('5', 'Zepto', '2');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('6', 'Swiggy', '2');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('7', 'Zomato', '2');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('8', 'Restaurant', '2');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('9', 'Cloth Shopping', '3');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('10', 'Gadgets', '3');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('11', 'Home Appliance', '3');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('12', 'Petrol', '4');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('13', 'Bus Ticket', '4');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('14', 'Train Ticket', '4');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('15', 'Amazon Prime', '1');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('16', 'Netflix', '1');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('17', 'Theme Park', '1');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('18', 'House Rent', '5');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('19', 'Rental Advance', '5');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('20', 'Stocks', '6');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('21', 'Mutual Funds', '6');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('22', 'Fixed Deposits', '6');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('23', 'Recurring Deposits', '6');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('24', 'Gold', '6');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('25', 'Doctor Consult', '7');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('26', 'Pharma', '7');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('27', 'Broadband', '8');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('28', 'Mobile Recharge', '8');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('29', 'DTH Recharge', '8');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('30', 'Trip', '9');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('31', 'Tour', '9');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('32', 'Lend', '10');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('33', 'Emergency', '10');
+INSERT INTO "main"."subcategory" ("id", "name", "category_id") VALUES ('34', 'Credit Card Bill', '8');
+
+
+INSERT INTO "main"."users" ("id", "username", "password", "is_admin", "deleted") VALUES ('1', 'admin', 'scrypt:32768:8:1$dJMSy8w1UWjY8zcN$39ad9d8b25aef9e04b86734aee52990bbf0c5fa525811743aec2b10e9a25b6c1e7a373f760561fd7657f4d4f759e35ec0345e3f10aa52ca68be136b458736ad0', '1', '0');
+INSERT INTO "main"."users" ("id", "username", "password", "is_admin", "deleted") VALUES ('2', 'mahi', 'scrypt:32768:8:1$6OJizd591JQrCEnu$faac2f5e9c036166c874333f4ab8e33d17bb2107563594a9512f2f9e7cba1e9773fd387f16bc7d8b97a23b67106ca7aa041e9a896da79495154b6ab43ad05270', '1', '0');
