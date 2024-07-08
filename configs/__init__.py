@@ -1,8 +1,8 @@
 import streamlit as st
 
-db_user = st.secrets['DB_USER']
-db_pwd = st.secrets['DB_PASS']
-db_name = st.secrets['DB_NAME']
+# db_user = st.secrets['DB_USER']
+# db_pwd = st.secrets['DB_PASS']
+# db_name = st.secrets['DB_NAME']
 
 
 colors = [
