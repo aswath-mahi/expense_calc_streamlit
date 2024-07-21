@@ -48,7 +48,7 @@ def expense_views():
     rec_col1, rec_col2 = st.columns([3, 2])
 
     # Load and filter data
-    data = utils_.fetch_expenses()
+    data = utils_.fetch_expenses(usr_name=session_usr)
     df = data.reset_index(drop=True)
     df['date'] = pd.to_datetime(df['date'])
     df['month'] = df['date'].dt.to_period('M')
@@ -104,10 +104,30 @@ def expense_views():
             st.altair_chart(chart, use_container_width=True)
 
 
+
+
+
 def admin_entry():
     st.title("User Management System")
-    
+
+
     if st.session_state.is_admin:
+        st.write("")
+        dbcol1, dbcol2 = st.columns(2,gap="medium")
+        with dbcol2:
+            if st.button('Download Database Backup'):
+                backup_data = utils_.backup_database()
+                st.download_button(
+                    label='Download SQLite Backup',
+                    data=backup_data,
+                    file_name='expenses_backup.db',
+                    mime='application/x-sqlite3'
+                )
+        with dbcol1:
+            uploaded_file = st.file_uploader("Upload SQLite Database", type="db")
+            if uploaded_file:
+                utils_.restore_database(uploaded_file)
+                st.success("Database restored successfully!")
         st.write("")  # Adding some space
         
         col1, col2, col3 = st.columns(3, gap="large")  # Adding gap between columns
@@ -155,8 +175,8 @@ def admin_entry():
         with col3:
             st.subheader("Delete User")
             all_users = [user[0] for user in db_manager.fetch_users(include_deleted=True)]
-            st.write("") 
-            st.write("") 
+            # st.write("")
+            # st.write("")
             st.write("")  # Adding some space
             delete_user = st.selectbox("Select User to Delete", all_users)
             delete_type = st.radio("Delete Type", ("Soft Delete", "Hard Delete"))

@@ -114,5 +114,13 @@ class ExpenseManagerSQLite:
         finally:
             conn.close()
 
+    def backup_database(self):
+        with open(self.db_path, 'rb') as f:
+            return f.read()
+
+    def restore_database(self,uploaded_file):
+        with open(self.db_path, 'wb') as f:
+            f.write(uploaded_file.read())
+
 db_path = os.getenv('DB_PATH', 'expenses.db')
 utils_ = ExpenseManagerSQLite(db_path=db_path)
