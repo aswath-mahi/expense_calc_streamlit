@@ -38,6 +38,7 @@ class SQLiteDatabaseManager:
                     description TEXT,
                     amount REAL,
                     usr_name TEXT,
+                    deleted INTEGER DEFAULT 0,
                     FOREIGN KEY (category_id) REFERENCES category (id),
                     FOREIGN KEY (subcategory_id) REFERENCES subcategory (id)
                 )
@@ -158,6 +159,15 @@ class SQLiteDatabaseManager:
                     print(f"No user {username} found to delete.")
         except Exception as e:
             print(f"Error hard-deleting user {username}: {e}")
+
+    def delete_expenses(self,ids):
+        placeholders = ', '.join(['?'] * len(ids))
+
+        query = f"UPDATE expense SET deleted = 1 WHERE id IN ({placeholders})"
+        with sqlite3.connect(self.db_name) as conn:
+            cursor = conn.cursor()
+            cursor.execute(query, ids)
+            conn.commit()
 
 
 # Example usage:

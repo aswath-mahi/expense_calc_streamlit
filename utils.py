@@ -102,16 +102,15 @@ class ExpenseManagerSQLite:
                 FROM expense e
                 JOIN category c ON e.category_id = c.id
                 JOIN subcategory s ON e.subcategory_id = s.id
+                WHERE e.deleted = 0
             """
+            params = ()
             if usr_name:
-                query += " WHERE e.usr_name = ?"
-                df = pd.read_sql_query(query, conn, params=(usr_name,))
-            else:
-                df = pd.read_sql_query(query, conn)
+                query += " AND e.usr_name = ?"
+                params = (usr_name,)
+
+            df = pd.read_sql_query(query, conn, params=params)
             return df
-        except sqlite3.Error as e:
-            logger.error(f"Error fetching expenses: {e}")
-            return pd.DataFrame()
         finally:
             conn.close()
 

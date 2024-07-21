@@ -7,18 +7,23 @@ import altair as alt
 from utils import utils_
 from configs import *
 
+
 def expense_views():
     st.title("Expense Tracker App")
     data_col1, data_col2, data_col3 = st.columns(3)
+
     categories = utils_.get_categories()
     category_options = {name: id for id, name in categories}
     selected_category = data_col1.selectbox("Select Category for Expense", list(category_options.keys()))
+
     session_usr = st.session_state.get('username', 'guest')
-    
+    is_admin = st.session_state.get('is_admin', False)  # Assume this flag is set in session state
+
     subcategory_options = {}
     if selected_category:
         subcategories = utils_.get_subcategories(category_options[selected_category])
         subcategory_options = {name: id for id, name in subcategories}
+
     selected_subcategory = data_col2.selectbox("Select Subcategory", list(subcategory_options.keys()))
     expense_date = data_col3.date_input("Date", format="YYYY-MM-DD")
 
@@ -26,43 +31,78 @@ def expense_views():
     expense_amount = data_col2.number_input("Expense Amount", min_value=0.0, format="%.2f")
     data_col3.text("")
     data_col3.text("")
+
     if data_col3.button("Add Expense", use_container_width=True):
         if selected_category and selected_subcategory and expense_description and expense_amount > 0:
-            utils_.add_expense(expense_date, category_options[selected_category], subcategory_options[selected_subcategory], expense_description, expense_amount, session_usr)
+            utils_.add_expense(expense_date, category_options[selected_category],
+                               subcategory_options[selected_subcategory], expense_description, expense_amount,
+                               session_usr)
             st.success("Expense added successfully!")
         else:
             st.error("Please fill in all fields to add an expense.")
 
     st.write("")
     st.subheader("Expense Records")
+
+    # Create two columns: one for the dataframe and one for the charts
     rec_col1, rec_col2 = st.columns([3, 2])
+
+    # Load and filter data
     data = utils_.fetch_expenses()
     df = data.reset_index(drop=True)
     df['date'] = pd.to_datetime(df['date'])
     df['month'] = df['date'].dt.to_period('M')
-    selected_month = rec_col2.selectbox("Select Month", options=df['month'].unique())
+    selected_month = rec_col2.selectbox("Select Month", options=df['month'].unique(), key='month_select')
 
     # Filter the dataframe based on the selected month
     df_filtered = df[df['month'] == selected_month]
-    df_show = df_filtered.copy()
-    df_show['date'] = df_filtered['date'].dt.strftime('%Y-%m-%d')
-    rec_col1.dataframe(df_show.drop(['id'], axis=1), use_container_width=True)
-    
-    if not df_filtered.empty:
-        category_expenses = df_filtered.groupby('category')['amount'].sum().reset_index()
-        
-        # Create the Altair donut chart
-        chart = alt.Chart(category_expenses).mark_arc(innerRadius=50).encode(
-            theta=alt.Theta(field="amount", type="quantitative"),
-            color=alt.Color(field="category", type="nominal",legend=alt.Legend(orient='bottom'),scale=alt.Scale(range=colors)),
-            tooltip=["category", "amount"]
-        ).properties(
-            width=500,
-            height=500,
-            title='Expenses by Category for ' + str(selected_month)
-        )
-        
-        rec_col2.altair_chart(chart, use_container_width=True)
+    df_filtered['is_deleted'] = False  # Add a new column for deletion status
+    with rec_col1:
+        if is_admin:
+            # Show only the dataframe with checkboxes for deletion if the user is an admin
+            df_show = st.data_editor(
+                df_filtered,
+                column_config={
+                    "is_deleted": st.column_config.CheckboxColumn(
+                        "Delete?",
+                        help="Select to mark the expense as deleted",
+                        default=False,
+                    )
+                },
+                disabled=["date", "category", "subcategory", "description", "amount"],
+                hide_index=True,
+            )
+
+            # Collect all IDs marked for deletion
+            ids_to_delete = df_filtered[df_show['is_deleted']]['id'].tolist()
+            if ids_to_delete:
+                db_manager.delete_expenses(ids_to_delete)  # Function to handle deletion in the backend
+
+            # Prepare data for visualization excluding deleted records
+            df_filtered = df_filtered[df_filtered['id'].isin(df_show[df_show['is_deleted'] == False]['id'])]
+        else:
+            st.dataframe(df_filtered)
+
+
+    # Prepare data for the chart and show it on the right column
+    with rec_col2:
+        if not df_filtered.empty:
+            category_expenses = df_filtered.groupby('category')['amount'].sum().reset_index()
+
+            # Create the Altair donut chart
+            chart = alt.Chart(category_expenses).mark_arc(innerRadius=50).encode(
+                theta=alt.Theta(field="amount", type="quantitative"),
+                color=alt.Color(field="category", type="nominal", legend=alt.Legend(orient='bottom'),
+                                scale=alt.Scale(range=colors)),
+                tooltip=["category", "amount"]
+            ).properties(
+                width=500,
+                height=500,
+                title='Expenses by Category for ' + str(selected_month)
+            )
+
+            st.altair_chart(chart, use_container_width=True)
+
 
 def admin_entry():
     st.title("User Management System")
